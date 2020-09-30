@@ -1,15 +1,20 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Tracer App"/>
+  <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+  <User></User>
+  <!-- <botton class="button is-primary">Primary</botton> -->
+
 </template>
 
 <script>
-import HelloWorld from './components/Main.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+import User from './user/User'
+
+import '../node_modules/bulma'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    User
   }
 }
 </script>
