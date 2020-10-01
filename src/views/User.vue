@@ -1,12 +1,17 @@
 <template>
   <div class="home">
-    <h1 class="title">Tracer - Users</h1>
-
-    <hr>
-
     <div class="columns">
       <div class="column is-3 is-offset-2">
-        <form v-on:submit.prevent="addUser">
+        <NavBar>
+        </NavBar>
+        <h1 class="title">Tracer - User</h1>
+      </div>
+    </div>
+
+    <hr>
+    <div class="columns">
+      <div class="column is-3 is-offset-2">
+        <form v-on:submit.prevent="adduser">
           <h2 class="subtitle">Add User</h2>
 
           <div class="field">
@@ -45,10 +50,10 @@
           </div>
 
           <div class="field">
-            <label class="label">Status</label>
+            <label class="label">test_result</label>
             <div class="control">
               <div class="select">
-                <select v-model="status">
+                <select v-model="test_result">
                   <option value="True">Positive</option>
                   <option value="False">Negative</option>
                   <option value="None">Unknown</option>
@@ -93,8 +98,21 @@
 <script>
 const API_URL = 'http://127.0.0.1:8000/'
 import axios from 'axios'
+import NavBar from '../components/Navbar'
+import { mapState } from 'vuex'
+import { getAPI } from '../axios-api'
+import '../../node_modules/bulma'
 export default {
-  name: 'Home',
+  name: 'user',
+  components: {
+    NavBar
+  },
+  onIdle () {
+    this.$store.dispatch('userLogout')
+      .then(() => {
+        this.$router.push({ name: 'login' })
+      })
+  },
   data () {
     return {
       users: [],
@@ -107,6 +125,7 @@ export default {
       encryption_keys: ''
     }
   },
+  computed: mapState(['APIData']),
   mounted () {
     this.getusers()
   },
@@ -115,9 +134,8 @@ export default {
       axios({
         method: 'get',
         url: API_URL + 'api/user/',
-        auth: {
-          username: 'adm',
-          password: 'adminuser'
+        headers: {
+            Authorization: `Bearer ${this.$store.state.accessToken}`
         }
       }).then(response => this.users = response.data)
       console.log(this.users)
@@ -127,6 +145,9 @@ export default {
         axios({
           method: 'post',
           url: API_URL + 'api/user/',
+          headers: {
+            Authorization: `Bearer ${this.$store.state.accessToken}`
+          },
           data: {
             name: this.name,
             phone: this.phone,
@@ -135,10 +156,6 @@ export default {
             location: this.location,
             test_result: this.test_result,
             encryption_keys: this.encryption_keys
-          },
-          auth: {
-            username: 'adm',
-            password: 'adminuser'
           }
         }).then((response) => {
             let newuser = {
@@ -184,6 +201,15 @@ export default {
     //     user.status = status
     //   })
     // }
+  },
+  created () {
+    getAPI.get('api/user/', { headers: { Authorization: `Bearer ${this.$store.state.accessToken}` } })
+      .then(response => {
+        this.users = response.data
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 </script>

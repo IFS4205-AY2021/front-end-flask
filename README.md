@@ -15,7 +15,6 @@ docker run -d -p 80:80 frontend
 ### Project setup
 ```
 npm install
-sudo npm install --save-dev --unsafe-perm node-sass
 ```
 
 ### Compiles and hot-reloads for development
